@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { evaluateRisk, officialOf, recommendation, ZERO_ADDRESS, BURN_ADDRESS } from "../lib/risk-score.js";
-import { resolveRiskTarget } from "../lib/risk.js";
+import { presentRisk, resolveRiskTarget } from "../lib/risk.js";
 import { PACIFIC_REGISTRY } from "../lib/combo-functions.js";
 
 test("resolves official tokens and rejects junk", () => {
@@ -131,4 +131,36 @@ test("inbound-only and empty-after-activity fire on the right facts", () => {
     transfers: [],
   });
   assert.ok(drained.flags.some((f) => f.id === "empty-after-activity"));
+});
+
+test("recent transfer report includes the transaction hash", () => {
+  const tx = "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+  const text = presentRisk({
+    address: "0x4444444444444444444444444444444444444444",
+    verdict: "clear",
+    score: 0,
+    recommendation: "ok",
+    isContract: false,
+    native: "0",
+    nonce: 1,
+    official: null,
+    block: 1,
+    lookback: 1000,
+    tokens: {
+      USDC: { balance: "0", in: "10", out: "0", count: 1 },
+      WPROS: { balance: "0", in: "0", out: "0", count: 0 },
+    },
+    flags: [],
+    recent: [{
+      block: 99,
+      direction: "in",
+      amount: "10",
+      symbol: "USDC",
+      from: "0x1111111111111111111111111111111111111111",
+      to: "0x4444444444444444444444444444444444444444",
+      tx,
+    }],
+    explorer: "https://www.pharosscan.xyz/address/0x4444",
+  }, "en");
+  assert.match(text, new RegExp(tx));
 });
