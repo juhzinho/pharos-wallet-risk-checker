@@ -1,0 +1,22 @@
+{
+  "name": "pharos-wallet-risk-checker",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.12"
+  },
+  "description": "Flags a Pharos wallet or contract's suspicious history via Chain MCP before you transact with it. Read-only.",
+  "scripts": {
+    "start": "node risk.js",
+    "risk": "node risk.js",
+    "test": "node --test test/risk.test.js && node test/e2e.js",
+    "test:unit": "node --test test/risk.test.js",
+    "test:e2e": "node test/e2e.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "viem": "^2.57.5"
+  }
+}
