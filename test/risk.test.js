@@ -104,6 +104,7 @@ test("new idle wallet is caution; recommendation mentions the lookback cap", () 
   assert.equal(r.verdict, "caution");
   assert.ok(r.flags.some((f) => f.id === "unused-new"));
   assert.match(recommendation("caution", 1000, "en"), /last 1000 blocks/);
+  assert.match(recommendation("caution", 5000, "en"), /1000-block get_logs windows/);
   assert.match(recommendation("avoid", 300, "pt"), /Não transacione/);
 });
 

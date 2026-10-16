@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { connect, takeCallLog, CHAIN_MCP_URL, DOCS_MCP_URL } from "./lib/mcp.js";
-import { MAX_WINDOW, checkRisk, presentRisk } from "./lib/risk.js";
+import { MAX_LOOKBACK, checkRisk, presentRisk } from "./lib/risk.js";
 
 function summarizeCalls(names) {
   const counts = names.reduce((acc, n) => ((acc[n] = (acc[n] ?? 0) + 1), acc), {});
@@ -23,7 +23,7 @@ Read-only. No wallet, no private key, no sending.
   npm run risk -- 0x000000000000000000000000000000000000dEaD --lang pt
 
 Options:
-  --lookback <blocks>   USDC/WPROS transfer history, 1 to ${MAX_WINDOW} (default 1000)
+  --lookback <blocks>   USDC/WPROS transfer history, 1 to ${MAX_LOOKBACK} (default 1000). Paged in 1000-block get_logs windows.
   --lang en|pt          report language (default en)
   --json                print the structured result
   --help
@@ -55,8 +55,8 @@ function parseArgs(argv) {
     else fail(`Unexpected argument: ${a}`);
   }
   if (!opts.target) fail("Pass a 0x address or a token symbol.");
-  if (!Number.isInteger(opts.lookback) || opts.lookback < 1 || opts.lookback > MAX_WINDOW) {
-    fail(`--lookback must be 1 to ${MAX_WINDOW}.`);
+  if (!Number.isInteger(opts.lookback) || opts.lookback < 1 || opts.lookback > MAX_LOOKBACK) {
+    fail(`--lookback must be 1 to ${MAX_LOOKBACK}.`);
   }
   return opts;
 }
